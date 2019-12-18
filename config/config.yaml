@@ -9,3 +9,9 @@ database:
   credentials:
     user: "admin"
     pass: "admin"
+validation:
+  max_pics_num:3
+  max_description_len:1000
+  max_name_len:200
+advert_list_page:
+  max_adverts_on_page:10
