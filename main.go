@@ -1,34 +1,31 @@
-package avito_test_task
+package main
 
 import (
 	"fmt"
+	config "github.com/maxp007/avito-test-task/config"
+	"github.com/maxp007/avito-test-task/router"
 	log "github.com/sirupsen/logrus"
 	"net/http"
-	"sync"
-)
-
-const (
-	PORT    = 8080
-	IP_ADDR = "127.0.0.1"
 )
 
 func init() {
 	log.SetReportCaller(true)
+
 }
 
 func main() {
 
-	var wg sync.WaitGroup
-	wg.Add(1)
+	err := config.GetInstance().LoadConfig()
 
-	go func() {
-		defer wg.Done()
-		err := http.ListenAndServe(IP_ADDR+":"+fmt.Sprint(PORT), nil)
-		if err != nil {
-			log.Print("main service, fatal error: ", err)
-		}
-	}()
+	if err != nil {
+		log.Fatal("config reader,", err)
+	}
 
-	wg.Wait()
+	log.Print("Started main microservice on ", config.GetInstance().Data.Server.Host, ":", config.GetInstance().Data.Server.Port)
+	err = http.ListenAndServe(config.GetInstance().Data.Server.Host+":"+fmt.Sprint(config.GetInstance().Data.Server.Port), router.GetRouter())
+	if err != nil {
+		log.Fatal("main service: ", err)
+	}
+
 	log.Print("Main microservice has stopped")
 }

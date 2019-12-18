@@ -1,0 +1,11 @@
+debug_mode: true
+server:
+  host: "127.0.0.1"
+  port: 8080
+database:
+  dbserver:
+    host: "localhost"
+    port: 5432
+  credentials:
+    user: "admin"
+    pass: "admin"
