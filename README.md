@@ -1,7 +1,7 @@
 # avito-test-task
 Marketplace Json API
 
-##Технологии
+## Технологии
 
 * Go1.13
 * PostgreSQL+PlpgSQL
@@ -34,7 +34,7 @@ Marketplace Json API
         }     
         
 #### Get advertisments page
-    URL : /api/adverts
+    GET /api/adverts
     params
         page = $int64
         order_date={'asc','desc'}
@@ -56,7 +56,7 @@ Marketplace Json API
     
 #### Get advertisment by ID
     
-    /api/advert/{id}/
+    GET /api/advert/{id}/
     
     params
         fields=[pictures,description]
