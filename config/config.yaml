@@ -1,17 +1,19 @@
 debug_mode: true
 server:
-  host: "127.0.0.1"
+  host: "web"# connect to docker-network hostname(defined in docker-compose)
   port: 8080
 database:
   dbserver:
-    host: "localhost"
+    host: "database" #  same as server.host
     port: 5432
   credentials:
-    user: "admin"
-    pass: "admin"
+    user: "postgres"
+    pass: "postgres"
+    dbname: "postgres"
+    schema: "adverts_schema"
 validation:
-  max_pics_num:3
-  max_description_len:1000
-  max_name_len:200
+  max_pics_num: 3
+  max_description_len: 1000
+  max_name_len: 200
 advert_list_page:
-  max_adverts_on_page:10
+  max_adverts_on_page: 10

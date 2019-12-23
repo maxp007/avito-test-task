@@ -19,9 +19,15 @@ type Config struct {
 func init() {
 	log.SetReportCaller(true)
 	conf = &Config{&ConfStruct{}}
+
+	err := GetInstance().loadConfig()
+	if err != nil {
+		log.Fatal("config reader,", err)
+	}
+
 }
 
-func (c *Config) LoadConfig() (err error) {
+func (c *Config) loadConfig() (err error) {
 	f, err := os.Open("config/config.yaml")
 	if err != nil {
 		return

@@ -1,24 +1,21 @@
 package router
 
 import (
-	"github.com/gorilla/mux"
+	"github.com/julienschmidt/httprouter"
 	"github.com/maxp007/avito-test-task/handlers"
-	"net/http"
 )
 
 func init() {
 }
 
-func GetRouter() (router *mux.Router) {
+func GetRouter() (r *httprouter.Router) {
 
-	router = mux.NewRouter()
+	r = httprouter.New()
 
-	api := router.PathPrefix("/api").Subrouter()
+	r.GET("/api/adverts", handlers.GetAdvertListHandler)
+	r.GET("/api/advert/:id/", handlers.GetAdvertHandler)
 
-	api.HandleFunc("/", handlers.GetAdvertListHandler).Methods(http.MethodGet)
-	api.HandleFunc("/advert/{id}/", handlers.GetAdvertHandler).Methods(http.MethodGet)
-
-	api.HandleFunc("/create", handlers.CreateAdvertHandler).Methods(http.MethodPost)
+	r.POST("/api/create", handlers.CreateAdvertHandler)
 
 	return
 }

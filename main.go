@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	config "github.com/maxp007/avito-test-task/config"
+	"github.com/maxp007/avito-test-task/config"
+	"github.com/maxp007/avito-test-task/database"
 	"github.com/maxp007/avito-test-task/router"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -15,17 +16,21 @@ func init() {
 
 func main() {
 
-	err := config.GetInstance().LoadConfig()
+	host := config.GetInstance().Data.Server.Host
+	port := config.GetInstance().Data.Server.Port
+	log.Print("Started main microservice on ", host, ":", port)
+	err := http.ListenAndServe(host+":"+fmt.Sprint(port), router.GetRouter())
 
-	if err != nil {
-		log.Fatal("config reader,", err)
-	}
-
-	log.Print("Started main microservice on ", config.GetInstance().Data.Server.Host, ":", config.GetInstance().Data.Server.Port)
-	err = http.ListenAndServe(config.GetInstance().Data.Server.Host+":"+fmt.Sprint(config.GetInstance().Data.Server.Port), router.GetRouter())
 	if err != nil {
 		log.Fatal("main service: ", err)
 	}
+
+	defer func() {
+		err := database.ConnClose()
+		if err != nil {
+			log.Println(err)
+		}
+	}()
 
 	log.Print("Main microservice has stopped")
 }

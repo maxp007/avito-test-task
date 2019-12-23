@@ -17,7 +17,105 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels(in *jlexer.Lexer, out *AdvertResponse) {
+func easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels(in *jlexer.Lexer, out *AdvertsList) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "adverts":
+			if in.IsNull() {
+				in.Skip()
+				out.Adverts = nil
+			} else {
+				in.Delim('[')
+				if out.Adverts == nil {
+					if !in.IsDelim(']') {
+						out.Adverts = make([]AdvertListElement, 0, 1)
+					} else {
+						out.Adverts = []AdvertListElement{}
+					}
+				} else {
+					out.Adverts = (out.Adverts)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v1 AdvertListElement
+					(v1).UnmarshalEasyJSON(in)
+					out.Adverts = append(out.Adverts, v1)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels(out *jwriter.Writer, in AdvertsList) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"adverts\":"
+		out.RawString(prefix[1:])
+		if in.Adverts == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v2, v3 := range in.Adverts {
+				if v2 > 0 {
+					out.RawByte(',')
+				}
+				(v3).MarshalEasyJSON(out)
+			}
+			out.RawByte(']')
+		}
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v AdvertsList) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v AdvertsList) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *AdvertsList) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *AdvertsList) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels(l, v)
+}
+func easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels1(in *jlexer.Lexer, out *AdvertResponse) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -38,143 +136,8 @@ func easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels(in *jlexer.Lexer,
 		switch key {
 		case "id":
 			out.Id = int64(in.Int64())
-		case "name":
-			out.Name = string(in.String())
-		case "description":
-			out.Description = string(in.String())
-		case "pictures":
-			if in.IsNull() {
-				in.Skip()
-				out.Pictures = nil
-			} else {
-				in.Delim('[')
-				if out.Pictures == nil {
-					if !in.IsDelim(']') {
-						out.Pictures = make([]string, 0, 4)
-					} else {
-						out.Pictures = []string{}
-					}
-				} else {
-					out.Pictures = (out.Pictures)[:0]
-				}
-				for !in.IsDelim(']') {
-					var v1 string
-					v1 = string(in.String())
-					out.Pictures = append(out.Pictures, v1)
-					in.WantComma()
-				}
-				in.Delim(']')
-			}
-		case "main_photo":
-			out.MainPicture = string(in.String())
-		case "price":
-			out.Price = int64(in.Int64())
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels(out *jwriter.Writer, in AdvertResponse) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	if in.Id != 0 {
-		const prefix string = ",\"id\":"
-		first = false
-		out.RawString(prefix[1:])
-		out.Int64(int64(in.Id))
-	}
-	{
-		const prefix string = ",\"name\":"
-		if first {
-			first = false
-			out.RawString(prefix[1:])
-		} else {
-			out.RawString(prefix)
-		}
-		out.String(string(in.Name))
-	}
-	{
-		const prefix string = ",\"description\":"
-		out.RawString(prefix)
-		out.String(string(in.Description))
-	}
-	if len(in.Pictures) != 0 {
-		const prefix string = ",\"pictures\":"
-		out.RawString(prefix)
-		{
-			out.RawByte('[')
-			for v2, v3 := range in.Pictures {
-				if v2 > 0 {
-					out.RawByte(',')
-				}
-				out.String(string(v3))
-			}
-			out.RawByte(']')
-		}
-	}
-	if in.MainPicture != "" {
-		const prefix string = ",\"main_photo\":"
-		out.RawString(prefix)
-		out.String(string(in.MainPicture))
-	}
-	{
-		const prefix string = ",\"price\":"
-		out.RawString(prefix)
-		out.Int64(int64(in.Price))
-	}
-	out.RawByte('}')
-}
-
-// MarshalJSON supports json.Marshaler interface
-func (v AdvertResponse) MarshalJSON() ([]byte, error) {
-	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels(&w, v)
-	return w.Buffer.BuildBytes(), w.Error
-}
-
-// MarshalEasyJSON supports easyjson.Marshaler interface
-func (v AdvertResponse) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels(w, v)
-}
-
-// UnmarshalJSON supports json.Unmarshaler interface
-func (v *AdvertResponse) UnmarshalJSON(data []byte) error {
-	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels(&r, v)
-	return r.Error()
-}
-
-// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *AdvertResponse) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels(l, v)
-}
-func easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels1(in *jlexer.Lexer, out *AdvertCreateBody) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeString()
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "name":
-			out.Name = string(in.String())
+		case "title":
+			out.Title = string(in.String())
 		case "description":
 			out.Description = string(in.String())
 		case "pictures":
@@ -200,6 +163,8 @@ func easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels1(in *jlexer.Lexer
 				}
 				in.Delim(']')
 			}
+		case "main_picture":
+			out.MainPicture = string(in.String())
 		case "price":
 			out.Price = int64(in.Int64())
 		default:
@@ -212,16 +177,27 @@ func easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels1(in *jlexer.Lexer
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels1(out *jwriter.Writer, in AdvertCreateBody) {
+func easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels1(out *jwriter.Writer, in AdvertResponse) {
 	out.RawByte('{')
 	first := true
 	_ = first
-	{
-		const prefix string = ",\"name\":"
+	if in.Id != 0 {
+		const prefix string = ",\"id\":"
+		first = false
 		out.RawString(prefix[1:])
-		out.String(string(in.Name))
+		out.Int64(int64(in.Id))
 	}
 	{
+		const prefix string = ",\"title\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.String(string(in.Title))
+	}
+	if in.Description != "" {
 		const prefix string = ",\"description\":"
 		out.RawString(prefix)
 		out.String(string(in.Description))
@@ -241,6 +217,296 @@ func easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels1(out *jwriter.Wri
 		}
 	}
 	{
+		const prefix string = ",\"main_picture\":"
+		out.RawString(prefix)
+		out.String(string(in.MainPicture))
+	}
+	{
+		const prefix string = ",\"price\":"
+		out.RawString(prefix)
+		out.Int64(int64(in.Price))
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v AdvertResponse) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels1(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v AdvertResponse) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels1(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *AdvertResponse) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels1(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *AdvertResponse) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels1(l, v)
+}
+func easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels2(in *jlexer.Lexer, out *AdvertListElement) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "id":
+			out.Id = int64(in.Int64())
+		case "title":
+			out.Title = string(in.String())
+		case "main_picture":
+			out.MainPicture = string(in.String())
+		case "price":
+			out.Price = int64(in.Int64())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels2(out *jwriter.Writer, in AdvertListElement) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"id\":"
+		out.RawString(prefix[1:])
+		out.Int64(int64(in.Id))
+	}
+	{
+		const prefix string = ",\"title\":"
+		out.RawString(prefix)
+		out.String(string(in.Title))
+	}
+	{
+		const prefix string = ",\"main_picture\":"
+		out.RawString(prefix)
+		out.String(string(in.MainPicture))
+	}
+	{
+		const prefix string = ",\"price\":"
+		out.RawString(prefix)
+		out.Int64(int64(in.Price))
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v AdvertListElement) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels2(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v AdvertListElement) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels2(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *AdvertListElement) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels2(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *AdvertListElement) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels2(l, v)
+}
+func easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels3(in *jlexer.Lexer, out *AdvertCreateResponse) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "id":
+			out.Id = int64(in.Int64())
+		case "error":
+			out.Error = string(in.String())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels3(out *jwriter.Writer, in AdvertCreateResponse) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if in.Id != 0 {
+		const prefix string = ",\"id\":"
+		first = false
+		out.RawString(prefix[1:])
+		out.Int64(int64(in.Id))
+	}
+	if in.Error != "" {
+		const prefix string = ",\"error\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.String(string(in.Error))
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v AdvertCreateResponse) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels3(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v AdvertCreateResponse) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels3(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *AdvertCreateResponse) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels3(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *AdvertCreateResponse) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels3(l, v)
+}
+func easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels4(in *jlexer.Lexer, out *AdvertCreateBody) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "title":
+			out.Title = string(in.String())
+		case "description":
+			out.Description = string(in.String())
+		case "pictures":
+			if in.IsNull() {
+				in.Skip()
+				out.Pictures = nil
+			} else {
+				in.Delim('[')
+				if out.Pictures == nil {
+					if !in.IsDelim(']') {
+						out.Pictures = make([]string, 0, 4)
+					} else {
+						out.Pictures = []string{}
+					}
+				} else {
+					out.Pictures = (out.Pictures)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v7 string
+					v7 = string(in.String())
+					out.Pictures = append(out.Pictures, v7)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "price":
+			out.Price = int64(in.Int64())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels4(out *jwriter.Writer, in AdvertCreateBody) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"title\":"
+		out.RawString(prefix[1:])
+		out.String(string(in.Title))
+	}
+	{
+		const prefix string = ",\"description\":"
+		out.RawString(prefix)
+		out.String(string(in.Description))
+	}
+	{
+		const prefix string = ",\"pictures\":"
+		out.RawString(prefix)
+		if in.Pictures == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v8, v9 := range in.Pictures {
+				if v8 > 0 {
+					out.RawByte(',')
+				}
+				out.String(string(v9))
+			}
+			out.RawByte(']')
+		}
+	}
+	{
 		const prefix string = ",\"price\":"
 		out.RawString(prefix)
 		out.Int64(int64(in.Price))
@@ -251,23 +517,23 @@ func easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels1(out *jwriter.Wri
 // MarshalJSON supports json.Marshaler interface
 func (v AdvertCreateBody) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels1(&w, v)
+	easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels4(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v AdvertCreateBody) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels1(w, v)
+	easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels4(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *AdvertCreateBody) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels1(&r, v)
+	easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels4(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *AdvertCreateBody) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels1(l, v)
+	easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels4(l, v)
 }

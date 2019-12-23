@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  database:
+    image: postgres:12
+    container_name: postgres_service
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - ./database/data:/var/lib/postgresql/data
+      - ./database/setup/:/db
+      - ./database/setup/create_db.sql:/docker-entrypoint-initdb.d/init.sql
+  web:
+    image: golang:1.13
+    container_name: main_service
+    restart: always
+    ports:
+      - 8080:8080
+    volumes:
+      - .:/server
+    working_dir: /server
+    command: go run .
