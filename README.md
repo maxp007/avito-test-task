@@ -9,9 +9,9 @@ Marketplace Json API
 * easyjson, для сериализации структур
 * Go tests
 
-##API methods
+## API methods
 
-####Create new advertisment
+#### Create new advertisment
 
     POST /api/create
         {
@@ -33,7 +33,7 @@ Marketplace Json API
             "error":{$string} //optional, if code != 200 OK
         }     
         
-####Get advertisments page
+#### Get advertisments page
     URL : /api/adverts
     params
         page = $int64
@@ -54,7 +54,7 @@ Marketplace Json API
             ]
     }        
     
-####Get advertisment by ID
+#### Get advertisment by ID
     
     /api/advert/{id}/
     
@@ -74,7 +74,7 @@ Marketplace Json API
        "main_picture": "http://pics.com/main_pic.jpg",
        "price": 1233
     }
-####Install docker
+#### Install docker
     sudo apt-get update
     sudo apt-get install -y \
         apt-transport-https \
