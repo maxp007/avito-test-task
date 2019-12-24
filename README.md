@@ -1,17 +1,25 @@
 # avito-test-task
-Marketplace Json API
+### Marketplace Json API
 
-##Технологии
+#### Demo server http://194.67.90.7:8080/api/adverts (see api methods below)
 
+## Технологии
 * Go1.13
 * PostgreSQL+PlpgSQL
 * Docker
 * easyjson, для сериализации структур
 * Go tests
 
-##API methods
-
-####Create new advertisment
+### How To Run (Ubuntu 19.10)
+    sudo apt update
+    sudo apt-get install -y docker.io
+    sudo apt-get install -y docker-compose
+    sudo apt-get install -y git
+    git clone https://github.com/maxp007/avito-test-task
+    cd avito-test-task
+    sudo docker-compose up --build --force-recreate --remove-orphans
+## API methods
+#### Create new advertisment
 
     POST /api/create
         {
@@ -33,8 +41,8 @@ Marketplace Json API
             "error":{$string} //optional, if code != 200 OK
         }     
         
-####Get advertisments page
-    URL : /api/adverts
+#### Get advertisments page
+    GET /api/adverts
     params
         page = $int64
         order={'date','price'}
@@ -54,9 +62,9 @@ Marketplace Json API
             ]
     }        
     
-####Get advertisment by ID
+#### Get advertisment by ID
     
-    /api/advert/{id}/
+    GET /api/advert/{id}/
     
     params
         fields=[pictures,description]
@@ -74,25 +82,4 @@ Marketplace Json API
        "main_picture": "http://pics.com/main_pic.jpg",
        "price": 1233
     }
-####Install docker
-    sudo apt-get update
-    sudo apt-get install -y \
-        apt-transport-https \
-        ca-certificate \
-        curl \
-        gnupg-agent \
-        software-properties-common
-              
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-  
-    sudo apt-key fingerprint 0EBFCD88   
-    sudo add-apt-repository \
-       "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-       $(lsb_release -cs) \
-       stable"
-####    
-    sudo apt-get update
-    sudo apt-get install docker-ce docker-ce-cli containerd.io
-####   
-    cd /path/to/repo/
-    docker-compose up --build --force-recreate --remove-orphans
+
