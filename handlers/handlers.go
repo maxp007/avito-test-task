@@ -23,30 +23,35 @@ func GetAdvertListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.P
 	w.Header().Add("Content-type", "application/json")
 
 	var page int64
-	var date_sort string
-	var price_sort string
+	var order string
+	var sort string
 
 	str_page := r.URL.Query().Get("page")
-
 	page, err := strconv.ParseInt(str_page, 10, 64)
 	if err != nil || page == 0 {
 		page = 1
 	}
 
-	date_sort = r.URL.Query().Get("order_date")
-	price_sort = r.URL.Query().Get("order_price")
+	order = r.URL.Query().Get("order")
+	sort = r.URL.Query().Get("sort")
+
+	if order != "date" && order != "price" {
+		order = "date"
+	}
+
+	// default order by date desc
+	if sort != "desc" && sort != "asc" {
+		sort = "desc"
+	}
 
 	var result []models.AdvertListElement
-	if price_sort != "" && (price_sort == "asc" || price_sort == "desc") {
-		result, err = database.Db_get_adverts_list_order_by_price(page, price_sort)
 
-	} else if date_sort != "" && (date_sort == "asc" || date_sort == "desc") {
-		result, err = database.Db_get_adverts_list_order_by_date(page, date_sort)
-
+	if order == "date" {
+		result, err = database.Db_get_adverts_list_order_by_date(page, sort)
 	} else {
-		//default sort by date i.e. (id),  DESC
-		result, err = database.Db_get_adverts_list_order_by_date(page, "desc")
+		result, err = database.Db_get_adverts_list_order_by_price(page, sort)
 	}
+
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

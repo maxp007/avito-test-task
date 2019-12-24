@@ -37,9 +37,9 @@ Marketplace Json API
     URL : /api/adverts
     params
         page = $int64
-        order_date={'asc','desc'}
+        order={'date','price'}
                 OR 
-        order_price={'asc','desc'}
+        sort={'asc','desc'}
 
     Response
     {
