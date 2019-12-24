@@ -1,23 +1,24 @@
 package handlers
 
 import (
+	"fmt"
+	"github.com/go-redis/redis/v7"
 	"github.com/julienschmidt/httprouter"
+	"github.com/maxp007/avito-test-task/cache"
+	"github.com/maxp007/avito-test-task/config"
 	"github.com/maxp007/avito-test-task/database"
 	"github.com/maxp007/avito-test-task/models"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"time"
 )
 
-// 3 метода: получение списка объявлений, получение одного объявления, создание объявления
-// - валидация полей (не больше 3 ссылок на фото, описание не больше 1000 символов, название не больше 200 символов)
+var (
+	Expiration_Time = config.GetInstance().Data.Cache.Expiration
+)
 
-/*
-Метод получения списка объявлений
-- нужна пагинация, на одной странице должно присутствовать 10 объявлений
-- нужна возможность сортировки: по цене (возрастание/убывание) и по дате создания (возрастание/убывание)
-- поля в ответе: название объявления, ссылка на главное фото (первое в списке), цена*/
 func GetAdvertListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	w.Header().Add("Content-type", "application/json")
@@ -39,12 +40,26 @@ func GetAdvertListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.P
 		order = "date"
 	}
 
-	// default order by date desc
 	if sort != "desc" && sort != "asc" {
 		sort = "desc"
 	}
 
 	var result []models.AdvertListElement
+
+	statux_result := cache.Cache.Get(fmt.Sprintf("p:%d,o:%s,s:%s", page, order, sort))
+	if statux_result.Err() != redis.Nil {
+		res, err := statux_result.Result()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+		} else {
+			w.WriteHeader(http.StatusOK)
+		}
+		_, err = w.Write([]byte(res))
+		if err != nil {
+			log.Println(err)
+		}
+		return
+	}
 
 	if order == "date" {
 		result, err = database.Db_get_adverts_list_order_by_date(page, sort)
@@ -64,7 +79,12 @@ func GetAdvertListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.P
 		return
 	}
 
+	status := cache.Cache.Set(fmt.Sprintf("p:%d,o:%s,s:%s", page, order, sort), resp_bytes, time.Second*time.Duration(Expiration_Time))
+	if status.Err() != nil {
+		log.Print("cache setting error ", status.Err())
+	}
 	w.WriteHeader(http.StatusOK)
+
 	_, err = w.Write(resp_bytes)
 	if err != nil {
 		log.Println(err)
@@ -74,10 +94,6 @@ func GetAdvertListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.P
 	return
 }
 
-/*
- Метод получения конкретного объявления
-- обязательные поля в ответе: название объявления, цена, ссылка на главное фото
-- опциональные поля (можно запросить, передав параметр fields): описание, ссылки на все фото*/
 func GetAdvertHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	w.Header().Add("Content-type", "application/json")
@@ -120,10 +136,6 @@ func GetAdvertHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Para
 	return
 }
 
-/*
-Метод создания объявления:
-- принимает все вышеперечисленные поля: название, описание, несколько ссылок на фотографии (сами фото загружать никуда не требуется), цена
-- возвращает ID созданного объявления и код результата (ошибка или успех)*/
 func CreateAdvertHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	response := models.AdvertCreateResponse{}

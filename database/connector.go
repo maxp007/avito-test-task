@@ -31,9 +31,10 @@ func init() {
 
 	pool, err := pgxpool.ConnectConfig(context.Background(), conf)
 	if err != nil {
-		log.Fatal("Unable to connect to database: %s", err)
+		log.Fatal(fmt.Sprintf("Unable to connect to database: %s", err))
 		return
 	}
+	log.Printf("Successfully connected to database on %s:%d", Host, Port)
 
 	Pool = pool
 }

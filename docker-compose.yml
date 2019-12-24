@@ -13,12 +13,23 @@ services:
       - ./database/data:/var/lib/postgresql/data
       - ./database/setup/:/db
       - ./database/setup/create_db.sql:/docker-entrypoint-initdb.d/init.sql
+  cache:
+    image: redis:latest
+    container_name: cache_service
+    restart: always
+    depends_on:
+      - database
+    volumes:
+      - ./cache/data:/data
   web:
     image: golang:1.13
     container_name: main_service
     restart: always
     ports:
       - 8080:8080
+    depends_on:
+      - cache
+      - database
     volumes:
       - .:/server
     working_dir: /server

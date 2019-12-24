@@ -11,6 +11,10 @@ database:
     pass: "postgres"
     dbname: "postgres"
     schema: "adverts_schema"
+cache:
+  host: "cache"
+  port: 6379
+  expiration: 10
 validation:
   max_pics_num: 3
   max_description_len: 1000

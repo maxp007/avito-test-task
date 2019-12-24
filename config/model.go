@@ -20,7 +20,11 @@ type ConfStruct struct {
 			Schema string `yaml:"schema"`
 		} `yaml:"credentials"`
 	} `yaml:"database"`
-
+	Cache struct {
+		Host       string `yaml:"host"`
+		Port       int    `yaml:"port"`
+		Expiration int    `yaml:"expiration"`
+	}
 	Validation struct {
 		MaxPicsNumber       int `yaml:"max_pics_num"`
 		MaxDesciptionLength int `yaml:"max_description_len"`
