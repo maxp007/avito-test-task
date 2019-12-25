@@ -4,11 +4,12 @@
 #### Demo server http://194.67.90.7:8080/api/adverts (see api methods below)
 
 ## Технологии
-* Go1.13
-* PostgreSQL+PlpgSQL
-* Docker
-* easyjson, для сериализации структур
-* Go tests
+* Go 1.13
+* PostgreSQL + PlpgSQL
+* Redis
+* Docker-Compose
+* Easyjson
+* Go tests, Unit-тесты
 
 ### How To Run (Ubuntu 19.10)
     sudo apt update
