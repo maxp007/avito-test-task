@@ -1,15 +1,18 @@
 package models
 
+import "github.com/jackc/pgtype"
+
 //go get -u github.com/mailru/easyjson/...
 //easyjson -all <file>.go
 
 type AdvertResponse struct {
-	Id          int64    `json:"id,omitempty"`
-	Title       string   `json:"title"`
-	Description string   `json:"description,omitempty"`
-	Pictures    []string `json:"pictures,omitempty"`
-	MainPicture string   `json:"main_picture"`
-	Price       int64    `json:"price"`
+	Id          int64              `json:"id,omitempty"`
+	Title       string             `json:"title"`
+	Description string             `json:"description,omitempty"`
+	Pictures    []string           `json:"pictures,omitempty"`
+	MainPicture string             `json:"main_picture"`
+	Price       int64              `json:"price"`
+	Date        pgtype.Timestamptz `json:"date"`
 }
 
 type AdvertCreateBody struct {

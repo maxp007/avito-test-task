@@ -12,7 +12,8 @@ create table adverts_schema.adverts
     description  adverts_schema.citext not null,
     pictures     text[]                not null,
     main_picture text                  not null,
-    price        integer               not null
+    price        integer               not null,
+    date_created timestamptz           not null
 );
 
 alter table adverts_schema.adverts
@@ -21,8 +22,11 @@ alter table adverts_schema.adverts
 create unique index adverts_id_uindex
     on adverts_schema.adverts (id);
 
-create unique index price_id_idx
+create index price_id_idx
     on adverts_schema.adverts (price, id);
+
+create index date_id_idx
+    on adverts_schema.adverts (date_created, id);
 
 create type adverts_schema.shortadvertdata as
     (
@@ -84,25 +88,25 @@ BEGIN
     if order_by_date = 'ASC' OR order_by_date = 'asc' THEN
         RETURN QUERY SELECT b.id, title, main_picture, price
                      FROM (adverts_schema.adverts
-                              JOIN (SELECT id
+                              JOIN (SELECT date_created, id
                                     FROM adverts_schema.adverts
-                                    ORDER BY id ASC
+                                    ORDER BY date_created ASC
                                     LIMIT ads_per_page
                                     OFFSET
                                     page_offset) as b
                                    ON b.id = adverts_schema.adverts.id)
-                     ORDER BY b.id ASC;
+                     ORDER BY b.date_created ASC;
     ELSIF order_by_date = 'DESC' or order_by_date = 'desc' THEN
         RETURN QUERY SELECT b.id, title, main_picture, price
                      FROM (adverts_schema.adverts
-                              JOIN (SELECT id
+                              JOIN (SELECT date_created, id
                                     FROM adverts_schema.adverts
-                                    ORDER BY id DESC
+                                    ORDER BY date_created DESC
                                     LIMIT ads_per_page
                                     OFFSET
                                     page_offset) as b
                                    ON b.id = adverts_schema.adverts.id )
-                     ORDER BY b.id DESC;
+                     ORDER BY b.date_created DESC;
     end if;
 
 END
@@ -121,8 +125,8 @@ DECLARE
     inserted_row_id bigint;
 BEGIN
 
-    INSERT into adverts_schema.adverts (title, description, main_picture, pictures, price)
-    VALUES (title_arg, description_arg, pictures_str_arg[1], pictures_str_arg, price_arg)
+    INSERT into adverts_schema.adverts (title, description, main_picture, pictures, price, date_created)
+    VALUES (title_arg, description_arg, pictures_str_arg[1], pictures_str_arg, price_arg,NOW())
     RETURNING id INTO inserted_row_id;
     return inserted_row_id;
 END;

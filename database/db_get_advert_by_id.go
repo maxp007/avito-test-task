@@ -11,6 +11,7 @@ func Db_get_advert_by_id(id int64, fields []string) (response models.AdvertRespo
 	fields = append(fields, "dummy_value") // trying to avoid pgx connector bug with empty slice
 	row := Pool.QueryRow(context.Background(), "select * FROM adverts_schema.getadvert($1,$2);", id, fields)
 	response = models.AdvertResponse{}
+
 	err = row.Scan(
 		&response.Id,
 		&response.Title,
@@ -18,6 +19,7 @@ func Db_get_advert_by_id(id int64, fields []string) (response models.AdvertRespo
 		&response.Pictures,
 		&response.MainPicture,
 		&response.Price,
+		&response.Date,
 	)
 	if err != nil {
 		return
