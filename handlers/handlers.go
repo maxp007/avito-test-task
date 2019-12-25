@@ -12,6 +12,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -161,7 +162,7 @@ func CreateAdvertHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 
 	if r.Body == nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		response.Error = "Request Body is nil"
+		response.Error = `"Request Body is nil"`
 		return
 	}
 
@@ -185,19 +186,19 @@ func CreateAdvertHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	error_array := make([]string, 0, 0)
 
 	if createRequestBody.Title == "" || len(createRequestBody.Title) > 200 {
-		error_array = append(error_array, "Title must be less than 200 and not empty")
+		error_array = append(error_array, `"Title must be less than 200 and not empty"`)
 		isValid = false
 	} else if createRequestBody.Description == "" || len(createRequestBody.Description) > 1000 {
-		error_array = append(error_array, "Description must be less than 1000 symbols and not empty")
+		error_array = append(error_array, `"Description must be less than 1000 symbols and not empty"`)
 		isValid = false
 	} else if createRequestBody.Price == 0 {
-		error_array = append(error_array, "Price Must be greater than 0")
+		error_array = append(error_array, `"Price Must be greater than 0"`)
 		isValid = false
 	} else if len(createRequestBody.Pictures) < 1 || len(createRequestBody.Pictures) > 3 {
-		error_array = append(error_array, "Picture field must contain at least one file, maximum 3 files")
+		error_array = append(error_array, `"Picture field must contain at least one file, maximum 3 files"`)
 		isValid = false
 	}
-
+	response.Error = fmt.Sprint("[" + strings.Join(error_array[:], ",") + "]")
 	if isValid == false {
 		w.WriteHeader(http.StatusBadRequest)
 		return
