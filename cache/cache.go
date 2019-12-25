@@ -5,7 +5,7 @@ import (
 	"github.com/go-redis/redis/v7"
 	"github.com/maxp007/avito-test-task/config"
 	_ "github.com/maxp007/avito-test-task/config"
-	log "github.com/sirupsen/logrus"
+	"log"
 )
 
 var Cache *redis.Client
@@ -22,11 +22,11 @@ func init() {
 
 	_, err := client.Ping().Result()
 	if err != nil {
-		log.Fatal(fmt.Sprintf("connection to redis on %s:%d failed", host, port))
+		log.Fatal(err)
+		return
 	}
-	log.Printf("Successfully connected to redis established on %s:%d ", host, port)
-
 	Cache = client
+	return
 }
 
 func ConnClose() (err error) {

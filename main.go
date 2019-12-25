@@ -24,6 +24,7 @@ var (
 )
 
 func main() {
+
 	log.Print("Starting main microservice on ", host, ":", port)
 
 	server := &http.Server{Addr: fmt.Sprintf("%s:%d", host, port), Handler: router.GetRouter()}

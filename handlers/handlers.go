@@ -29,7 +29,7 @@ func GetAdvertListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.P
 
 	str_page := r.URL.Query().Get("page")
 	page, err := strconv.ParseInt(str_page, 10, 64)
-	if err != nil || page == 0 {
+	if err != nil || page == 0 || page < 0 {
 		page = 1
 	}
 
@@ -79,7 +79,7 @@ func GetAdvertListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.P
 		return
 	}
 
-	status := cache.Cache.Set(fmt.Sprintf("p:%d,o:%s,s:%s", page, order, sort), resp_bytes, time.Second*time.Duration(Expiration_Time))
+	status := cache.Cache.Set(fmt.Sprintf("p:%d,o:%s,s:%s", page, order, sort), resp_bytes, time.Minute*time.Duration(Expiration_Time))
 	if status.Err() != nil {
 		log.Print("cache setting error ", status.Err())
 	}
@@ -159,6 +159,12 @@ func CreateAdvertHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 
 	w.Header().Add("Content-type", "application/json")
 
+	if r.Body == nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		response.Error = "Request Body is nil"
+		return
+	}
+
 	body_bytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Println("Error reading body", err)
@@ -170,7 +176,7 @@ func CreateAdvertHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	err = createRequestBody.UnmarshalJSON([]byte(body_bytes))
 	if err != nil {
 		log.Println("Error unmashalling createRequestBody", err)
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
 		response.Error = err.Error()
 		return
 	}

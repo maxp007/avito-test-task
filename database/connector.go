@@ -5,10 +5,7 @@ import (
 	"fmt"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/maxp007/avito-test-task/config"
-
-	_ "github.com/maxp007/avito-test-task/config"
-
-	log "github.com/sirupsen/logrus"
+	"log"
 )
 
 var Pool *pgxpool.Pool
@@ -25,19 +22,20 @@ func init() {
 	conf, err := pgxpool.ParseConfig(conn_string)
 
 	if err != nil {
-		log.Fatal("Config parse error: %s", err)
+		log.Fatal(err)
 		return
 	}
 
 	pool, err := pgxpool.ConnectConfig(context.Background(), conf)
 	if err != nil {
-		log.Fatal(fmt.Sprintf("Unable to connect to database: %s", err))
+		log.Fatal(err)
 		return
 	}
-	log.Printf("Successfully connected to database on %s:%d", Host, Port)
 
 	Pool = pool
+	return
 }
+
 func ConnClose() (err error) {
 	defer func(err *error) {
 		Pool.Close()
