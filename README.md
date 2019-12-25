@@ -47,7 +47,6 @@
     params
         page = $int64
         order={'date','price'}
-                OR 
         sort={'asc','desc'}
 
     Response
