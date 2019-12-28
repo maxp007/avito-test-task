@@ -9,7 +9,7 @@
 * Redis
 * Docker-Compose
 * Easyjson
-* Go tests, Unit-тесты
+* Go testsing, Unit-тесты
 
 ### How To Run (Ubuntu 19.10)
     sudo apt update
@@ -18,7 +18,7 @@
     sudo apt-get install -y git
     git clone https://github.com/maxp007/avito-test-task
     cd avito-test-task
-    sudo docker-compose up --build --force-recreate --remove-orphans
+    sudo docker-compose up --build 
 ## API methods
 #### Create new advertisment
 
@@ -35,11 +35,10 @@
         }
         
     Response
-    codes 200, 500 
         body
         {
             "id": {$int64},
-            "error":{$string} //optional, if code != 200 OK
+            "error":{$string} //optional, if errors occured
         }     
         
 #### Get advertisments page
@@ -47,7 +46,6 @@
     params
         page = $int64
         order={'date','price'}
-                OR 
         sort={'asc','desc'}
 
     Response
@@ -70,7 +68,6 @@
 #### Get advertisment by ID
     
     GET /api/advert/{id}/
-    
     params
         fields=[pictures,description]
     
@@ -78,8 +75,8 @@
     {
        "id": 10360,
        "title": "Продам гараж",
-       "description": "Обычный гараж",
-       "pictures": [
+       "description": "Обычный гараж",       //optional
+       "pictures": [                         //optional
            "http://pics.com/main_pic.jpg",
            "http://pics.com/seco_pic.jpg",
            "http://pics.com/thir_pic.jpg"
