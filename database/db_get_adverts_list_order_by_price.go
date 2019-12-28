@@ -26,7 +26,8 @@ func Db_get_adverts_list_order_by_price(page int64, order_price string) (respons
 			&response[i].Id,
 			&response[i].Title,
 			&response[i].MainPicture,
-			&response[i].Price)
+			&response[i].Price,
+			&response[i].Date)
 		if err != nil {
 			log.Println(err)
 		}
@@ -38,6 +39,5 @@ func Db_get_adverts_list_order_by_price(page int64, order_price string) (respons
 		log.Println(err)
 	}
 
-	// No errors found - do something with sum
 	return
 }

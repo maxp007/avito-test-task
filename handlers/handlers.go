@@ -12,17 +12,17 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 )
 
 var (
-	Expiration_Time = config.GetInstance().Data.Cache.Expiration
+	Expiration_Time  = config.GetInstance().Data.Cache.Expiration
+	adverts_per_page = config.GetInstance().Data.AdvertList.MaxAdvertsOnPage
 )
 
 func GetAdvertListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
-	w.Header().Add("Content-type", "application/json")
+	w.Header().Add("Content-type", "application/json;charset=utf-8")
 
 	var page int64
 	var order string
@@ -73,7 +73,21 @@ func GetAdvertListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.P
 		return
 	}
 
-	resp_bytes, err := (models.AdvertsList{Adverts: result}).MarshalJSON()
+	ads_number, err := database.Db_get_estimated_adverts_number()
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	response_data := models.AdvertsList{
+		PagesTotal:  ads_number / int64(adverts_per_page),
+		Page:        page,
+		AdvsPerPage: int64(adverts_per_page),
+		Adverts:     result,
+	}
+
+	resp_bytes, err := (response_data).MarshalJSON()
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -97,7 +111,7 @@ func GetAdvertListHandler(w http.ResponseWriter, r *http.Request, _ httprouter.P
 
 func GetAdvertHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
-	w.Header().Add("Content-type", "application/json")
+	w.Header().Add("Content-type", "application/json;charset=utf-8")
 
 	id_param := ps.ByName("id")
 	if id_param == "" {
@@ -158,11 +172,11 @@ func CreateAdvertHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 
 	createRequestBody := &models.AdvertCreateBody{}
 
-	w.Header().Add("Content-type", "application/json")
+	w.Header().Add("Content-type", "application/json;charset=utf-8")
 
 	if r.Body == nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		response.Error = `"Request Body is nil"`
+		response.Errors = append(response.Errors, `"Request Body is nil"`)
 		return
 	}
 
@@ -170,7 +184,8 @@ func CreateAdvertHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	if err != nil {
 		log.Println("Error reading body", err)
 		w.WriteHeader(http.StatusInternalServerError)
-		response.Error = err.Error()
+		response.Errors = append(response.Errors, err.Error())
+
 		return
 	}
 
@@ -178,7 +193,7 @@ func CreateAdvertHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	if err != nil {
 		log.Println("Error unmashalling createRequestBody", err)
 		w.WriteHeader(http.StatusBadRequest)
-		response.Error = err.Error()
+		response.Errors = append(response.Errors, err.Error())
 		return
 	}
 
@@ -188,17 +203,20 @@ func CreateAdvertHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	if createRequestBody.Title == "" || len(createRequestBody.Title) > 200 {
 		error_array = append(error_array, `"Title must be less than 200 and not empty"`)
 		isValid = false
-	} else if createRequestBody.Description == "" || len(createRequestBody.Description) > 1000 {
+	}
+	if createRequestBody.Description == "" || len(createRequestBody.Description) > 1000 {
 		error_array = append(error_array, `"Description must be less than 1000 symbols and not empty"`)
 		isValid = false
-	} else if createRequestBody.Price == 0 {
+	}
+	if createRequestBody.Price <= 0 {
 		error_array = append(error_array, `"Price Must be greater than 0"`)
 		isValid = false
-	} else if len(createRequestBody.Pictures) < 1 || len(createRequestBody.Pictures) > 3 {
+	}
+	if len(createRequestBody.Pictures) < 1 || len(createRequestBody.Pictures) > 3 {
 		error_array = append(error_array, `"Picture field must contain at least one file, maximum 3 files"`)
 		isValid = false
 	}
-	response.Error = fmt.Sprint("[" + strings.Join(error_array[:], ",") + "]")
+	response.Errors = error_array
 	if isValid == false {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -208,7 +226,7 @@ func CreateAdvertHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
-		response.Error = err.Error()
+		response.Errors = append(response.Errors, err.Error())
 		return
 	}
 

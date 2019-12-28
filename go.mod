@@ -10,6 +10,7 @@ require (
 	github.com/gorilla/pat v1.0.1
 	github.com/jackc/pgtype v1.0.2
 	github.com/jackc/pgx/v4 v4.1.2
+	github.com/jasonlvhit/gocron v0.0.0-20191216013803-9b1e2c8fb35c
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/mailru/easyjson v0.7.0
 	github.com/sirupsen/logrus v1.4.2

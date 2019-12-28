@@ -4,7 +4,6 @@ package models
 
 import (
 	json "encoding/json"
-	pgtype "github.com/jackc/pgtype"
 	easyjson "github.com/mailru/easyjson"
 	jlexer "github.com/mailru/easyjson/jlexer"
 	jwriter "github.com/mailru/easyjson/jwriter"
@@ -37,6 +36,12 @@ func easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels(in *jlexer.Lexer,
 			continue
 		}
 		switch key {
+		case "pages_total":
+			out.PagesTotal = int64(in.Int64())
+		case "page":
+			out.Page = int64(in.Int64())
+		case "adverts_per_page":
+			out.AdvsPerPage = int64(in.Int64())
 		case "adverts":
 			if in.IsNull() {
 				in.Skip()
@@ -75,8 +80,23 @@ func easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels(out *jwriter.Writ
 	first := true
 	_ = first
 	{
-		const prefix string = ",\"adverts\":"
+		const prefix string = ",\"pages_total\":"
 		out.RawString(prefix[1:])
+		out.Int64(int64(in.PagesTotal))
+	}
+	{
+		const prefix string = ",\"page\":"
+		out.RawString(prefix)
+		out.Int64(int64(in.Page))
+	}
+	{
+		const prefix string = ",\"adverts_per_page\":"
+		out.RawString(prefix)
+		out.Int64(int64(in.AdvsPerPage))
+	}
+	{
+		const prefix string = ",\"adverts\":"
+		out.RawString(prefix)
 		if in.Adverts == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
 			out.RawString("null")
 		} else {
@@ -168,8 +188,10 @@ func easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels1(in *jlexer.Lexer
 			out.MainPicture = string(in.String())
 		case "price":
 			out.Price = int64(in.Int64())
-		case "date":
-			easyjsonD2b7633eDecodeGithubComJackcPgtype(in, &out.Date)
+		case "date_created":
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.Date).UnmarshalJSON(data))
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -230,9 +252,9 @@ func easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels1(out *jwriter.Wri
 		out.Int64(int64(in.Price))
 	}
 	{
-		const prefix string = ",\"date\":"
+		const prefix string = ",\"date_created\":"
 		out.RawString(prefix)
-		easyjsonD2b7633eEncodeGithubComJackcPgtype(out, in.Date)
+		out.Raw((in.Date).MarshalJSON())
 	}
 	out.RawByte('}')
 }
@@ -259,64 +281,6 @@ func (v *AdvertResponse) UnmarshalJSON(data []byte) error {
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *AdvertResponse) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels1(l, v)
-}
-func easyjsonD2b7633eDecodeGithubComJackcPgtype(in *jlexer.Lexer, out *pgtype.Timestamptz) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeString()
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "Time":
-			if data := in.Raw(); in.Ok() {
-				in.AddError((out.Time).UnmarshalJSON(data))
-			}
-		case "Status":
-			out.Status = pgtype.Status(in.Uint8())
-		case "InfinityModifier":
-			out.InfinityModifier = pgtype.InfinityModifier(in.Int8())
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjsonD2b7633eEncodeGithubComJackcPgtype(out *jwriter.Writer, in pgtype.Timestamptz) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	{
-		const prefix string = ",\"Time\":"
-		out.RawString(prefix[1:])
-		out.Raw((in.Time).MarshalJSON())
-	}
-	{
-		const prefix string = ",\"Status\":"
-		out.RawString(prefix)
-		out.Uint8(uint8(in.Status))
-	}
-	{
-		const prefix string = ",\"InfinityModifier\":"
-		out.RawString(prefix)
-		out.Int8(int8(in.InfinityModifier))
-	}
-	out.RawByte('}')
 }
 func easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels2(in *jlexer.Lexer, out *AdvertListElement) {
 	isTopLevel := in.IsStart()
@@ -345,6 +309,10 @@ func easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels2(in *jlexer.Lexer
 			out.MainPicture = string(in.String())
 		case "price":
 			out.Price = int64(in.Int64())
+		case "date_created":
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.Date).UnmarshalJSON(data))
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -378,6 +346,11 @@ func easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels2(out *jwriter.Wri
 		const prefix string = ",\"price\":"
 		out.RawString(prefix)
 		out.Int64(int64(in.Price))
+	}
+	{
+		const prefix string = ",\"date_created\":"
+		out.RawString(prefix)
+		out.Raw((in.Date).MarshalJSON())
 	}
 	out.RawByte('}')
 }
@@ -426,8 +399,29 @@ func easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels3(in *jlexer.Lexer
 		switch key {
 		case "id":
 			out.Id = int64(in.Int64())
-		case "error":
-			out.Error = string(in.String())
+		case "errors":
+			if in.IsNull() {
+				in.Skip()
+				out.Errors = nil
+			} else {
+				in.Delim('[')
+				if out.Errors == nil {
+					if !in.IsDelim(']') {
+						out.Errors = make([]string, 0, 4)
+					} else {
+						out.Errors = []string{}
+					}
+				} else {
+					out.Errors = (out.Errors)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v7 string
+					v7 = string(in.String())
+					out.Errors = append(out.Errors, v7)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -448,15 +442,24 @@ func easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels3(out *jwriter.Wri
 		out.RawString(prefix[1:])
 		out.Int64(int64(in.Id))
 	}
-	if in.Error != "" {
-		const prefix string = ",\"error\":"
+	if len(in.Errors) != 0 {
+		const prefix string = ",\"errors\":"
 		if first {
 			first = false
 			out.RawString(prefix[1:])
 		} else {
 			out.RawString(prefix)
 		}
-		out.String(string(in.Error))
+		{
+			out.RawByte('[')
+			for v8, v9 := range in.Errors {
+				if v8 > 0 {
+					out.RawByte(',')
+				}
+				out.String(string(v9))
+			}
+			out.RawByte(']')
+		}
 	}
 	out.RawByte('}')
 }
@@ -523,9 +526,9 @@ func easyjsonD2b7633eDecodeGithubComMaxp007AvitoTestTaskModels4(in *jlexer.Lexer
 					out.Pictures = (out.Pictures)[:0]
 				}
 				for !in.IsDelim(']') {
-					var v7 string
-					v7 = string(in.String())
-					out.Pictures = append(out.Pictures, v7)
+					var v10 string
+					v10 = string(in.String())
+					out.Pictures = append(out.Pictures, v10)
 					in.WantComma()
 				}
 				in.Delim(']')
@@ -563,11 +566,11 @@ func easyjsonD2b7633eEncodeGithubComMaxp007AvitoTestTaskModels4(out *jwriter.Wri
 			out.RawString("null")
 		} else {
 			out.RawByte('[')
-			for v8, v9 := range in.Pictures {
-				if v8 > 0 {
+			for v11, v12 := range in.Pictures {
+				if v11 > 0 {
 					out.RawByte(',')
 				}
-				out.String(string(v9))
+				out.String(string(v12))
 			}
 			out.RawByte(']')
 		}

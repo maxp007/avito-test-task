@@ -17,6 +17,7 @@ services:
     image: redis:latest
     container_name: cache_service
     restart: always
+
     depends_on:
       - database
     volumes:

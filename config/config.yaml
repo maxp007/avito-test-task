@@ -11,10 +11,13 @@ database:
     pass: "postgres"
     dbname: "postgres"
     schema: "adverts_schema"
+  maintainance:
+    analyze_period: 30  #minutes
+    vacuum_period: 12 #houres
 cache:
   host: "cache"
   port: 6379
-  expiration: 1
+  expiration: 1 #minutes
 validation:
   max_pics_num: 3
   max_description_len: 1000

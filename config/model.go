@@ -19,6 +19,10 @@ type ConfStruct struct {
 			DbName string `yaml:"dbname"`
 			Schema string `yaml:"schema"`
 		} `yaml:"credentials"`
+		Maintainance struct {
+			AnalyzeInterval int `yaml:"analyze_period"`
+			VacuumInterval  int `yaml:"vacuum_period"`
+		} `yaml:"maintainance"`
 	} `yaml:"database"`
 	Cache struct {
 		Host       string `yaml:"host"`

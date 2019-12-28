@@ -16,6 +16,9 @@ create table adverts_schema.adverts
     date_created timestamptz           not null
 );
 
+
+
+
 alter table adverts_schema.adverts
     owner to postgres;
 
@@ -33,7 +36,8 @@ create type adverts_schema.shortadvertdata as
     id bigint,
     title adverts_schema.citext,
     main_picture text,
-    price integer
+    price integer,
+    date_created timestamptz
     );
 
 alter type adverts_schema.shortadvertdata owner to postgres;
@@ -47,7 +51,7 @@ DECLARE
     page_offset bigint = ads_per_page * (page - 1);
 BEGIN
     if order_by_price = 'ASC' OR order_by_price = 'asc' THEN
-        return QUERY SELECT b.id, title, main_picture, b.price
+        return QUERY SELECT b.id, title, main_picture, b.price, adverts.date_created
                      FROM (adverts_schema.adverts
                               JOIN (SELECT price, id
                                     FROM adverts_schema.adverts
@@ -58,7 +62,7 @@ BEGIN
                                    ON b.id = adverts_schema.adverts.id)
                      ORDER BY b.price ASC;
     ELSIF order_by_price = 'DESC' OR order_by_price = 'desc' THEN
-        return QUERY SELECT b.id, title, main_picture, b.price
+        return QUERY SELECT b.id, title, main_picture, b.price, adverts.date_created
                      FROM (adverts_schema.adverts
                               JOIN (SELECT price, id
                                     FROM adverts_schema.adverts
@@ -86,9 +90,9 @@ DECLARE
 
 BEGIN
     if order_by_date = 'ASC' OR order_by_date = 'asc' THEN
-        RETURN QUERY SELECT b.id, title, main_picture, price
+        RETURN QUERY SELECT b.id, title, main_picture, price , adverts.date_created
                      FROM (adverts_schema.adverts
-                              JOIN (SELECT date_created, id
+                              JOIN (SELECT adverts.date_created, id
                                     FROM adverts_schema.adverts
                                     ORDER BY date_created ASC
                                     LIMIT ads_per_page
@@ -97,9 +101,9 @@ BEGIN
                                    ON b.id = adverts_schema.adverts.id)
                      ORDER BY b.date_created ASC;
     ELSIF order_by_date = 'DESC' or order_by_date = 'desc' THEN
-        RETURN QUERY SELECT b.id, title, main_picture, price
+        RETURN QUERY SELECT b.id, title, main_picture, price, adverts.date_created
                      FROM (adverts_schema.adverts
-                              JOIN (SELECT date_created, id
+                              JOIN (SELECT adverts.date_created, id
                                     FROM adverts_schema.adverts
                                     ORDER BY date_created DESC
                                     LIMIT ads_per_page

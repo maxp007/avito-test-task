@@ -6,6 +6,8 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/maxp007/avito-test-task/config"
 	"log"
+
+	"github.com/jasonlvhit/gocron"
 )
 
 var Pool *pgxpool.Pool
@@ -31,9 +33,20 @@ func init() {
 		log.Fatal(err)
 		return
 	}
-
 	Pool = pool
 	return
+}
+
+func init() {
+
+	vacuum_period := config.GetInstance().Data.Database.Maintainance.VacuumInterval
+	analyze_period := config.GetInstance().Data.Database.Maintainance.AnalyzeInterval
+
+	gocron.Every(uint64(analyze_period)).Minutes().Do(AnalyzeTable)
+	gocron.Every(uint64(vacuum_period)).Hours().Do(VacuumTable)
+
+	gocron.Start()
+
 }
 
 func ConnClose() (err error) {

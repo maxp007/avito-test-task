@@ -52,12 +52,16 @@
 
     Response
     {
+        "page":1,
+        "pages_total":2,
+        "adverts_per_page":10,
         "adverts": [
             {
                 "id": 10360,
                 "title": "Продам гараж",
                 "main_picture": "http://pics.com/main_pic.jpg",
-                "price": 1233
+                "price": 1233,
+                 "date_created": "2019-12-26T03:42:54.671364Z" 
             },
             {...},
             ]
@@ -81,6 +85,7 @@
            "http://pics.com/thir_pic.jpg"
        ],
        "main_picture": "http://pics.com/main_pic.jpg",
-       "price": 1233
+       "price": 1233,
+       "date_created": "2019-12-26T04:12:22.754965Z"
     }
 
