@@ -1,7 +1,8 @@
 # avito-test-task
 ### Marketplace Json API
 
-#### Demo server http://194.67.90.7:8080/api/adverts (see api methods below)
+### Demo server http://194.67.90.7:8080/api/adverts (see api methods below)
+### Api Documentation [Swagger API (v1.0.0-OAS3)](https://app.swaggerhub.com/apis/maxp007/avito-test-task/1.0.0-oas3)
 
 ## Технологии
 * Go 1.13
@@ -19,70 +20,4 @@
     git clone https://github.com/maxp007/avito-test-task
     cd avito-test-task
     sudo docker-compose up --build 
-## API methods
-#### Create new advertisment
-
-    POST /api/create
-        {
-        "title":"Продам гараж",
-        "description":"Обычный гараж",
-        "pictures":[
-            "http://pics.com/main_pic.jpg",
-            "http://pics.com/seco_pic.jpg",
-            "http://pics.com/thir_pic.jpg"
-        ],
-        "price":1233
-        }
-        
-    Response
-        body
-        {
-            "id": {$int64},
-            "error":{$string} //optional, if errors occured
-        }     
-        
-#### Get advertisments page
-    GET /api/adverts
-    params
-        page = $int64
-        order={'date','price'}
-        sort={'asc','desc'}
-
-    Response
-    {
-        "page":1,
-        "pages_total":2,
-        "adverts_per_page":10,
-        "adverts": [
-            {
-                "id": 10360,
-                "title": "Продам гараж",
-                "main_picture": "http://pics.com/main_pic.jpg",
-                "price": 1233,
-                 "date_created": "2019-12-26T03:42:54.671364Z" 
-            },
-            {...},
-            ]
-    }        
-    
-#### Get advertisment by ID
-    
-    GET /api/advert/{id}/
-    params
-        fields=[pictures,description]
-    
-    Response
-    {
-       "id": 10360,
-       "title": "Продам гараж",
-       "description": "Обычный гараж",       //optional
-       "pictures": [                         //optional
-           "http://pics.com/main_pic.jpg",
-           "http://pics.com/seco_pic.jpg",
-           "http://pics.com/thir_pic.jpg"
-       ],
-       "main_picture": "http://pics.com/main_pic.jpg",
-       "price": 1233,
-       "date_created": "2019-12-26T04:12:22.754965Z"
-    }
-
+### API Methods: [link](https://app.swaggerhub.com/apis/maxp007/avito-test-task/1.0.0-oas3)
